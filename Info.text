@@ -130,3 +130,31 @@ git commit -m "init project"
 bash
 git config --global user.name "اسم تو"
 git config --global user.email "ایمیل تو"
+
+
+
+
+۴. کپی آدرس ریپازیتوری از صفحه‌ای که باز می‌شود:
+
+https://github.com/اسم-کاربری-تو/delsa-shop.git
+
+۵. وصل کردن و فرستادن (در ترمینال):
+
+bash
+git branch -M main
+git remote add origin https://github.com/اسم-کاربری-تو/delsa-shop.git
+git push -u origin main
+
+آدرس را با آدرس خودت عوض کن.
+
+۶. اگر اسم کاربری و رمز خواست: رمز عادی GitHub کار نمی‌کند و باید Personal Access Token بدهی. اگر به این مرحله رسیدی بگو تا قدم‌به‌قدم بگویم چطور بسازی.
+
+۷. تأیید: صفحه‌ی ریپازیتوری را در GitHub رفرش کن. فایل‌ها را باید ببینی و .env و notes.txt نباید آنجا باشند.
+
+از این به بعد برای هر تغییر فقط این چهار دستور کافی است:
+
+bash
+git status
+git add .
+git commit -m "توضیح"
+git push

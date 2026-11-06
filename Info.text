@@ -139,11 +139,28 @@ git config --global user.email "ایمیل تو"
 https://github.com/اسم-کاربری-تو/delsa-shop.git
 
 ۵. وصل کردن و فرستادن (در ترمینال):
-
+---
 bash
 git branch -M main
 git remote add origin https://github.com/اسم-کاربری-تو/delsa-shop.git
 git push -u origin main
+
+معنی هر دستور
+
+git branch -M main
+اسم شاخه‌ی فعلی را می‌کند main. Gitهای قدیمی‌تر اسم پیش‌فرض را master می‌گذارند ولی GitHub از main استفاده می‌کند، پس این خط جلوی ناهماهنگی را می‌گیرد. حرف M یعنی «اگر لازم بود اسم را عوض کن».
+
+git remote add origin <آدرس>
+به Git می‌گوید «آدرس ریپازیتوری من در GitHub این است». origin فقط یک اسم برای آن آدرس است (مثل ذخیره کردن یک شماره در مخاطبین).
+
+git push -u origin main
+یعنی «کامیت‌های شاخه‌ی main را بفرست به origin». حرف u فقط بار اول لازم است و به Git یاد می‌دهد این شاخه به کجا وصل است. از دفعه‌ی بعد فقط git push کافی است.
+
+نکته
+
+تو ریپازیتوری را با GitHub Desktop ساختی، پس این سه دستور را لازم نداری. دکمه‌ی Publish repository همین کارها را برایت انجام می‌دهد. این دستورها فقط برای کسی است که از ترمینال کار می‌کند. اگر Publish را زدی و پروژه در سایت دیده شد، همین کافی است.
+----
+
 
 آدرس را با آدرس خودت عوض کن.
 
@@ -158,3 +175,4 @@ git status
 git add .
 git commit -m "توضیح"
 git push
+

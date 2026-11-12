@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { background: #FFF1EE; color: #2B0A0F; }
+
+.blob {
+  background: linear-gradient(100deg, #6E0F19, #E3202B 60%, #FF2330);
+  border-radius: 58% 42% 55% 45% / 52% 48% 52% 48%;
+  animation: morph 9s ease-in-out infinite;
+}
+@keyframes morph { 50% { border-radius: 42% 58% 46% 54% / 56% 44% 56% 44%; } }
+.float { animation: float 5s ease-in-out infinite; }
+@keyframes float { 50% { transform: translateY(-12px); } }
+:focus-visible { outline: 3px solid #FFC93C; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

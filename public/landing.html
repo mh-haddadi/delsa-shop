@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دلسا شاپ | صفحه اصلی</title>
+<!-- فونت‌ها: Lalezar برای تیترها و Vazirmatn برای متن عادی (از Google Fonts) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Tailwind: کلاس‌هایی مثل text-center و mt-5 از اینجا کار می‌کنند (فعلاً نسخه CDN) -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<!-- تم صفحه (تیره/روشن) را قبل از نمایش صفحه از حافظه مرورگر می‌خواند تا هنگام باز شدن صفحه چشمک نزند -->
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
+<!-- استایل‌های اختصاصی خودمان (رنگ‌ها، انیمیشن‌ها، منو) -->
+<link rel="stylesheet" href="./css/landing.css">
+</head>
+<body>
+<!--
+  راهنمای سریع برای شروع:
+  - هر بخش صفحه با یک کامنت مثل همین مشخص شده است.
+  - کلاس‌هایی مثل text-center و mt-5 مال Tailwind هستند و هر کدام یک ویژگی CSS را اعمال می‌کنند:
+      text-center = وسط‌چین کردن متن
+      mx-auto = وسط قرار دادن یک بلوک (فاصله خودکار از چپ و راست)
+      mt-5 / px-5 = فاصله از بالا / فاصله داخلی چپ و راست
+      rounded-full = گوشه‌های کاملاً گرد
+      md: = یعنی فقط در صفحه‌های بزرگ‌تر از موبایل (تبلت و دسکتاپ) اعمال شود
+  - رنگ‌ها و انیمیشن‌های مشترک در فایل css/landing.css هستند.
+-->
+<!-- ===== کتابخانه آیکون‌ها (نامرئی) =====
+     لوگو، لیوان، بشقاب، چنگال و قاشق یک بار اینجا تعریف شده‌اند و هر جای صفحه با use href="#نام" صدا زده می‌شوند -->
+<svg width="0" height="0" class="absolute" aria-hidden="true">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7D1420"/><stop offset="1" stop-color="#FF2A33"/></linearGradient></defs>
+  <symbol id="logo" viewBox="0 0 48 48"><path d="M24 3c11 0 21 7 21 20s-9 22-21 22S3 36 3 24 13 3 24 3z" fill="url(#g)"/><ellipse cx="24" cy="18" rx="6" ry="7.5" fill="none" stroke="#fff" stroke-width="2"/><path d="M24 25.5V32" stroke="#fff" stroke-width="2"/><rect x="19" y="32" width="10" height="8" rx="1" fill="none" stroke="#fff" stroke-width="2"/></symbol>
+  <symbol id="cup" viewBox="0 0 60 80"><rect x="2" y="4" width="56" height="11" rx="4" fill="currentColor"/><path d="M7 15h46l-6 62H13z" fill="currentColor"/><path d="M10 36h40l-1.4 14H11.4z" fill="#fff" fill-opacity=".35"/></symbol>
+  <symbol id="plate" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="currentColor"/><circle cx="50" cy="50" r="30" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="4"/></symbol>
+  <symbol id="fork" viewBox="0 0 30 100"><path d="M3 2h4v22h3V2h4v22h3V2h4v22a8 8 0 0 1-6 7.7V94a4 4 0 0 1-8 0V31.7A8 8 0 0 1 3 24z" fill="currentColor"/></symbol>
+  <symbol id="spoon" viewBox="0 0 30 100"><ellipse cx="15" cy="20" rx="11" ry="17" fill="currentColor"/><rect x="11" y="32" width="8" height="64" rx="4" fill="currentColor"/></symbol>
+</svg>
+
+<!-- ===== بخش بالای صفحه (Hero): هدر + عنوان اصلی + ظرف‌های در حال سقوط ===== -->
+<div class="hero relative overflow-hidden rounded-b-[2.5rem] text-white">
+  <!-- این div خالی است؛ ظرف‌های یکبارمصرف متحرک را در انتهای فایل، کد JS داخلش می‌سازد -->
+  <div class="rain" aria-hidden="true"></div>
+  <!-- هدر (نوار بالا): در موبایل دو طرف، در دسکتاپ سه ستون: لوگو | منو (دقیقاً وسط) | دکمه‌ها -->
+  <header class="relative z-20 mx-3 mt-3 flex max-w-5xl items-center justify-between gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 backdrop-blur md:mx-auto md:mt-5 md:grid md:grid-cols-[1fr_auto_1fr] md:px-5">
+    <div class="flex items-center gap-2">
+      <!-- دکمه همبرگری: فقط در موبایل دیده می‌شود (md:hidden) و منوی کشویی را باز می‌کند -->
+      <button id="menuBtn" class="grid h-10 w-10 place-items-center rounded-full bg-white/15 md:hidden" aria-label="باز کردن منو" aria-expanded="false"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <!-- لوگو و نام فروشگاه -->
+      <a href="#" class="flex items-center gap-2"><svg class="h-9 w-9"><use href="#logo"/></svg><span class="d text-xl md:text-2xl">دلسا شاپ</span></a>
+    </div>
+    <!-- منوی اصلی: در موبایل مخفی (hidden) و در دسکتاپ نمایش داده می‌شود (md:flex) -->
+    <nav class="hidden gap-6 text-sm text-white/90 md:flex"><a href="#cats">دسته‌بندی‌ها</a><a href="#best">پرفروش‌ها</a><a href="#faq">سوالات متداول</a><a href="#foot">تماس با ما</a></nav>
+    <!-- سه دکمه سمت چپ هدر: جستجو، سبد خرید، تغییر تم -->
+    <div class="flex items-center gap-1.5 md:justify-self-end">
+      <!-- دکمه جستجو: فرم جستجوی زیر هدر را باز و بسته می‌کند -->
+      <button id="sBtn" class="grid h-10 w-10 place-items-center rounded-full bg-white/15" aria-label="جستجو" aria-expanded="false" aria-controls="sForm"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
+      <!-- دکمه سبد خرید؛ عدد کوچک روی آن (id=count) تعداد محصولات را نشان می‌دهد -->
+      <button class="relative grid h-10 w-10 place-items-center rounded-full bg-white/15" aria-label="سبد خرید"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 4h2l2.4 11h10.2L20 8H6.5"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg><span id="count" hidden class="absolute -top-1 -left-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#FFC83D] px-1 text-xs font-bold text-[#2B0A10]">0</span></button>
+      <!-- دکمه تغییر تم تیره/روشن (آیکون خورشید و ماه) -->
+      <button id="tBtn" class="grid h-10 w-10 place-items-center rounded-full bg-white/15" aria-label="تغییر به حالت روشن"><svg class="ic-sun h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic-moon h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
+    </div>
+  </header>
+  <!-- فرم جستجو: اول مخفی است (hidden) و با دکمه جستجو دیده می‌شود -->
+  <form id="sForm" hidden role="search" class="relative z-20 mx-auto mt-2 max-w-5xl px-3"><input id="sInput" type="search" placeholder="جستجوی محصول، مثلا فومی" aria-label="جستجوی محصول" class="w-full rounded-full border border-white/25 bg-white/15 px-5 py-3 text-white placeholder-white/60 outline-none backdrop-blur focus:border-[#FFC83D]"></form>
+
+  <!-- متن اصلی بالای صفحه: همه چیز وسط‌چین است (text-center) -->
+  <section class="relative z-10 mx-auto max-w-6xl px-5 pb-24 pt-14 md:pb-36 md:pt-24">
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="mb-5 inline-block rotate-2 rounded-full bg-[#FFC83D] px-4 py-1.5 text-sm font-bold text-[#2B0A10]">افتتاح ۱ آبان ۱۴۰۴، مهرشهر کرج</span>
+      <h1 class="d text-5xl leading-[1.3] md:text-7xl">میز تولدت را همین‌جا بچین</h1>
+      <p class="mx-auto mt-5 max-w-md text-base leading-8 text-white/90 md:text-lg">یکبارمصرف، تم تولد، لوازم آشپزخانه و بهداشتی؛ همه‌چیز را در یک سبد جمع کن.</p>
+      <!-- دو دکمه اصلی؛ justify-center آن‌ها را وسط می‌آورد -->
+      <div class="mt-8 flex flex-wrap justify-center gap-3"><a href="#best" class="btn sun">دیدن محصولات</a><a href="#cats" class="btn border border-white/40 bg-white/10">دسته‌بندی‌ها</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== محتوای اصلی صفحه ===== -->
+<main>
+<!-- ===== دسته‌بندی‌ها ===== -->
+<section id="cats" class="mx-auto max-w-6xl px-5 py-14">
+  <h2 class="d mb-8 text-center text-3xl md:text-4xl">چی لازم داری؟</h2>
+  <!-- شبکه (grid) دسته‌بندی‌ها؛ هر کاشی یک لینک رنگی با ایموجی است. col-span-2 یعنی دو ستون جا می‌گیرد -->
+  <div id="bento" class="grid auto-rows-[9rem] grid-cols-2 gap-3 md:auto-rows-[10.5rem] md:grid-cols-4 md:gap-5">
+    <a href="#" class="relative col-span-2 overflow-hidden rounded-[2rem_2rem_2rem_.5rem] p-5 text-[#2B0A10] md:row-span-2" style="background:linear-gradient(135deg,#FFC83D,#FFE08A)"><span class="d text-3xl md:text-5xl">تم تولد</span><span class="mt-1 block max-w-[12rem] text-sm font-medium">بادکنک، بشقاب، لیوان و شمع در یک تم</span><span class="absolute -bottom-3 left-3 text-7xl md:text-[9rem]" aria-hidden="true">🎈</span></a>
+    <a href="#" class="relative col-span-2 overflow-hidden rounded-[2rem_2rem_.5rem_2rem] p-5 text-white" style="background:linear-gradient(135deg,#7D1420,#E01E2B)"><span class="d text-2xl md:text-3xl">یکبارمصرف</span><span class="absolute -bottom-2 left-3 text-6xl md:text-7xl" aria-hidden="true">🥤</span></a>
+    <a href="#" class="relative overflow-hidden rounded-[2rem_.5rem_2rem_2rem] p-4 text-white" style="background:linear-gradient(135deg,#C2275F,#FF5C8A)"><span class="d text-xl md:text-2xl">آشپزخانه</span><span class="absolute -bottom-2 left-2 text-5xl md:text-6xl" aria-hidden="true">🍽️</span></a>
+    <a href="#" class="relative overflow-hidden rounded-[.5rem_2rem_2rem_2rem] p-4 text-white" style="background:linear-gradient(135deg,#0F6B66,#2BB3A6)"><span class="d text-xl md:text-2xl">لوازم بهداشتی</span><span class="absolute -bottom-2 left-2 text-5xl md:text-6xl" aria-hidden="true">🧻</span></a>
+  </div>
+</section>
+
+<!-- ===== پرفروش‌ترین‌ها ===== -->
+<section id="best" class="mx-auto max-w-6xl pb-16">
+  <!-- عنوان بخش و لینک «همه محصولات» زیر آن، وسط‌چین -->
+  <div class="mb-6 px-5 text-center"><h2 class="d text-3xl md:text-4xl">پرفروش‌ترین‌ها</h2><a href="#" class="mt-2 inline-block text-sm font-bold text-[var(--red)] underline underline-offset-4">همه محصولات</a></div>
+  <!-- ردیف کارت‌های محصول: افقی و قابل اسکرول (overflow-x-auto)؛ هر کارت یک article است. در CSS وقتی جا هست وسط می‌ماند -->
+  <div class="snap flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5">
+    <article class="card min-w-[14rem] snap-start overflow-hidden rounded-[1.5rem]"><div class="grid h-40 place-items-center text-7xl" style="background:#FFE9E6" aria-hidden="true">🥣</div><div class="p-4 text-center"><div><h3 class="font-bold">تک پرس فومی</h3><p class="mt-1 text-sm text-[var(--muted)]"><b class="text-base text-[var(--ink)]">۶٬۰۰۰</b> تومان</p></div><button data-add class="btn sun mt-3 w-full !py-2 text-sm" aria-label="افزودن به سبد">+ افزودن به سبد</button></div></article>
+    <article class="card min-w-[14rem] snap-start overflow-hidden rounded-[1.5rem]"><div class="grid h-40 place-items-center text-7xl" style="background:#FFF1C9" aria-hidden="true">🎈</div><div class="p-4 text-center"><div><h3 class="font-bold">بادکنک متالیک</h3><p class="mt-1 text-sm text-[var(--muted)]"><b class="text-base text-[var(--ink)]">۴۵٬۰۰۰</b> تومان</p></div><button data-add class="btn sun mt-3 w-full !py-2 text-sm" aria-label="افزودن به سبد">+ افزودن به سبد</button></div></article>
+    <article class="card min-w-[14rem] snap-start overflow-hidden rounded-[1.5rem]"><div class="grid h-40 place-items-center text-7xl" style="background:#FFDCE8" aria-hidden="true">🥳</div><div class="p-4 text-center"><div><h3 class="font-bold">ست بشقاب و لیوان تولد</h3><p class="mt-1 text-sm text-[var(--muted)]"><b class="text-base text-[var(--ink)]">۸۵٬۰۰۰</b> تومان</p></div><button data-add class="btn sun mt-3 w-full !py-2 text-sm" aria-label="افزودن به سبد">+ افزودن به سبد</button></div></article>
+    <article class="card min-w-[14rem] snap-start overflow-hidden rounded-[1.5rem]"><div class="grid h-40 place-items-center text-7xl" style="background:#D6F3EF" aria-hidden="true">🥄</div><div class="p-4 text-center"><div><h3 class="font-bold">قاشق و چنگال یکبارمصرف</h3><p class="mt-1 text-sm text-[var(--muted)]"><b class="text-base text-[var(--ink)]">۳۰٬۰۰۰</b> تومان</p></div><button data-add class="btn sun mt-3 w-full !py-2 text-sm" aria-label="افزودن به سبد">+ افزودن به سبد</button></div></article>
+  </div>
+</section>
+
+<!-- ===== سوالات متداول: اول عنوان (وسط‌چین)، زیرش لیست سوال‌ها ===== -->
+<section id="faq" class="mx-auto max-w-3xl px-5 pb-20">
+  <h2 class="d mb-8 text-center text-3xl leading-[1.4] md:text-5xl">سوالی داری؟<br>جوابش اینجاست</h2>
+  <!-- لیست سوال‌ها؛ details و summary آکاردئون بدون JS هستند (با کلیک باز و بسته می‌شوند). space-y-3 بین آن‌ها فاصله می‌اندازد -->
+  <div class="space-y-3">
+    <!-- سوال اول به‌صورت پیش‌فرض باز است (attribute: open) -->
+    <details class="card rounded-2xl p-5" open><summary class="flex items-center justify-between gap-4 font-bold">فروشگاه کجاست؟<i class="text-2xl text-[var(--red)]">+</i></summary><p class="mt-3 leading-8 text-[var(--muted)]">فروشگاه دلسا در مهرشهر کرج قرار دارد و از ۱ آبان ۱۴۰۴ فعال است.</p></details>
+    <details class="card rounded-2xl p-5"><summary class="flex items-center justify-between gap-4 font-bold">چطور سفارش بدهم؟<i class="text-2xl text-[var(--red)]">+</i></summary><p class="mt-3 leading-8 text-[var(--muted)]">محصول را به سبد اضافه کن و سفارش را ثبت کن. ثبت سفارش آنلاین به‌زودی فعال می‌شود.</p></details>
+    <details class="card rounded-2xl p-5"><summary class="flex items-center justify-between gap-4 font-bold">برای خرید عمده چه کنم؟<i class="text-2xl text-[var(--red)]">+</i></summary><p class="mt-3 leading-8 text-[var(--muted)]">با ما تماس بگیر و تعداد و نوع محصول را بگو تا قیمت را اعلام کنیم.</p></details>
+  </div>
+</section>
+</main>
+
+<!-- ===== فوتر (پایین صفحه): لوگو، توضیح کوتاه و لینک‌ها، همه وسط‌چین ===== -->
+<footer id="foot" class="relative overflow-hidden bg-[#2A0A10] px-5 py-12 text-white">
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-8 text-center">
+    <div class="flex flex-col items-center"><a href="#" class="flex items-center gap-2"><svg class="h-12 w-12"><use href="#logo"/></svg><span class="d text-2xl">دلسا شاپ</span></a><p class="mt-3 text-sm text-white/70">مهرشهر، کرج. یکبارمصرف و تم تولد.</p></div>
+    <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/85"><a href="#cats">دسته‌بندی‌ها</a><a href="#best">پرفروش‌ها</a><a href="#faq">سوالات متداول</a></nav>
+  </div>
+  
+</footer>
+
+<!-- ===== منوی موبایل ===== -->
+<!-- پس‌زمینه تیره پشت منو؛ با کلیک روی آن منو بسته می‌شود -->
+<div id="ov" class="ov fixed inset-0 z-40 bg-black/55"></div>
+<!-- خود منو: از سمت راست می‌آید (right-0). کلاس open را JS به آن اضافه می‌کند -->
+<aside id="drawer" class="drawer fixed inset-y-0 right-0 z-50 flex w-72 max-w-[85%] flex-col bg-[#2A0A10] p-6 text-white" inert aria-label="منو">
+  <div class="mb-8 flex items-center justify-between"><a href="#" class="flex items-center gap-2"><svg class="h-12 w-12"><use href="#logo"/></svg><span class="d text-2xl">دلسا شاپ</span></a><button class="close grid h-10 w-10 place-items-center rounded-full bg-white/10" aria-label="بستن منو">✕</button></div>
+  <nav class="flex flex-col gap-1 text-lg"><a href="#" class="rounded-xl px-3 py-3 hover:bg-white/10">خانه</a><a href="#cats" class="rounded-xl px-3 py-3 hover:bg-white/10">دسته‌بندی‌ها</a><a href="#best" class="rounded-xl px-3 py-3 hover:bg-white/10">پرفروش‌ها</a><a href="#faq" class="rounded-xl px-3 py-3 hover:bg-white/10">سوالات متداول</a><a href="#foot" class="rounded-xl px-3 py-3 hover:bg-white/10">تماس با ما</a></nav>
+</aside>
+
+<script>
+/* ===== ۱) منوی موبایل (کشویی) ===== */
+const drawer = document.getElementById('drawer');   // خود منو
+const overlay = document.getElementById('ov');      // پس‌زمینه تیره
+const menuBtn = document.getElementById('menuBtn'); // دکمه همبرگری
+
+// منو را باز (true) یا بسته (false) می‌کند
+function setMenu(open) {
+  drawer.classList.toggle('open', open);  // کلاس open منو را به داخل صفحه می‌آورد
+  overlay.classList.toggle('show', open); // پس‌زمینه تیره را نشان می‌دهد
+  if (open) drawer.removeAttribute('inert'); else drawer.setAttribute('inert', ''); // وقتی بسته است قابل فوکوس نباشد
+  menuBtn.setAttribute('aria-expanded', open);       // برای صفحه‌خوان‌ها
+  document.body.style.overflow = open ? 'hidden' : ''; // وقتی منو بازه صفحه اسکرول نشود
+}
+menuBtn.onclick = () => setMenu(true);   // کلیک روی همبرگر: باز شود
+overlay.onclick = () => setMenu(false);  // کلیک روی پس‌زمینه: بسته شود
+drawer.querySelectorAll('a,.close').forEach(el => el.onclick = () => setMenu(false)); // کلیک روی لینک یا ✕: بسته شود
+addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });        // کلید Esc: بسته شود
+
+/* ===== ۲) جستجو ===== */
+const searchBtn = document.getElementById('sBtn');
+const searchForm = document.getElementById('sForm');
+const searchInput = document.getElementById('sInput');
+let scrolled = false; // برای اینکه فقط یک بار به بخش محصولات اسکرول کنیم
+
+// با دکمه جستجو، فرم نمایش داده یا مخفی می‌شود
+searchBtn.onclick = () => {
+  const willShow = searchForm.hidden;
+  searchForm.hidden = !willShow;
+  searchBtn.setAttribute('aria-expanded', willShow);
+  if (willShow) searchInput.focus(); // مکان‌نما بره داخل کادر
+};
+searchForm.onsubmit = e => e.preventDefault(); // جلوگیری از رفرش شدن صفحه با Enter
+
+// هر بار که کاربر تایپ می‌کند، کارت‌هایی که نامشان شامل متن نیست مخفی می‌شوند
+searchInput.oninput = () => {
+  const q = searchInput.value.trim();
+  document.querySelectorAll('#best article').forEach(card => {
+    card.hidden = !!q && !card.querySelector('h3').textContent.includes(q);
+  });
+  if (q && !scrolled) { scrolled = true; document.getElementById('best').scrollIntoView({ behavior: 'smooth' }); }
+  if (!q) scrolled = false;
+};
+
+/* ===== ۳) تغییر تم تیره/روشن ===== */
+const themeBtn = document.getElementById('tBtn');
+const root = document.documentElement; // همان تگ html
+// متن توضیح دکمه را متناسب با تم فعلی تنظیم می‌کند
+const updateThemeLabel = () => themeBtn.setAttribute('aria-label', root.dataset.theme === 'light' ? 'تغییر به حالت تیره' : 'تغییر به حالت روشن');
+updateThemeLabel();
+themeBtn.onclick = () => {
+  const t = root.dataset.theme === 'light' ? 'dark' : 'light';
+  root.dataset.theme = t;  // CSS بر اساس data-theme رنگ‌ها را عوض می‌کند
+  updateThemeLabel();
+  try { localStorage.setItem('theme', t); } catch (e) {} // انتخاب کاربر را در مرورگر ذخیره می‌کند
+};
+
+/* ===== ۴) شمارنده سبد خرید (فعلاً فقط نمایشی؛ بعداً به بک‌اند وصل می‌شود) ===== */
+let cartCount = 0;
+const countBadge = document.getElementById('count');
+document.querySelectorAll('[data-add]').forEach(btn => btn.onclick = () => {
+  cartCount++;
+  countBadge.textContent = cartCount.toLocaleString('fa-IR'); // عدد فارسی
+  countBadge.hidden = false;
+});
+
+/* ===== ۵) ظرف‌های یکبارمصرف در حال سقوط در بخش بالای صفحه ===== */
+const rain = document.querySelector('.rain');
+const kinds = ['cup', 'plate', 'fork', 'spoon'];                       // نوع شکل‌ها (همان آیکون‌های بالای فایل)
+const viewBoxes = { cup: '0 0 60 80', plate: '0 0 100 100', fork: '0 0 30 100', spoon: '0 0 30 100' };
+const colors = ['#FFC83D', '#FF5C8A', '#2BB3A6', '#FFFFFF', '#FF8A5C']; // رنگ‌ها
+for (let i = 0; i < 20; i++) {          // ۲۰ تا شکل می‌سازد
+  const kind = kinds[i % 4];
+  const size = 28 + Math.random() * 52;   // اندازه تصادفی
+  const isNear = size > 56;               // بزرگ‌ترها «نزدیک‌تر» هستند: تارتر و کندتر
+  const color = colors[i % 5];
+  const h = kind === 'plate' ? size : size * 1.3;
+  const w = kind === 'plate' ? size : h * (kind === 'cup' ? .75 : .3);
+  const el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  el.setAttribute('viewBox', viewBoxes[kind]);
+  el.setAttribute('class', 'fx');         // کلاس fx در CSS انیمیشن سقوط دارد
+  el.innerHTML = `<use href="#${kind}"/>`;
+  // موقعیت، رنگ، شفافیت، تاری و سرعت تصادفی
+  el.style.cssText = `left:${Math.random() * 96}%;width:${w}px;height:${h}px;color:${color};opacity:${color === '#FFFFFF' ? .22 : isNear ? .3 : .55};filter:blur(${isNear ? 2.5 : 0}px);--r:${Math.random() * 360}deg;--sw:${(Math.random() * 2 - 1) * 60}px;--t:${Math.random() * 85}%;animation-duration:${isNear ? 22 + Math.random() * 8 : 11 + Math.random() * 7}s;animation-delay:-${Math.random() * 20}s`;
+  rain.appendChild(el);
+}
+</script>
+</body>
+</html>

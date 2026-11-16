@@ -1,0 +1,65 @@
+/* ===== ۱) رنگ‌های اصلی سایت (متغیرها) =====
+   حالت پیش‌فرض تیره است. هر جا var(--red) ببینی یعنی همین رنگ‌ها. */
+:root{--bg:#1B0609;--surface:#2B0C11;--ink:#FFEFEC;--muted:#C9A0A5;--line:#4A1B22;--red:#FF4650;--wine:#7D1420;--pop:#FF2A33;--sun:#FFC83D;--top:#2A0A10;color-scheme:dark;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* حالت روشن: وقتی JS مقدار data-theme="light" را روی تگ html بگذارد، رنگ‌ها عوض می‌شوند */
+:root[data-theme="light"]{--bg:#FFF6F3;--surface:#FFFFFF;--ink:#2B0A10;--muted:#7A5359;--line:#F0D9D5;--red:#D91A27;--top:#C8182A;color-scheme:light}
+
+/* ===== ۲) پایه صفحه ===== */
+html{background:linear-gradient(var(--top) 0 env(safe-area-inset-top,0px),var(--bg) 0);scroll-behavior:smooth} /* اسکرول نرم هنگام کلیک روی لینک‌ها */
+body{background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;min-height:100vh;overflow-x:hidden;transition:background-color .3s,color .3s}
+.d{font-family:Lalezar,Vazirmatn,Tahoma,sans-serif;font-weight:400} /* کلاس d = فونت تیتر */
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:8px} /* کادر زرد هنگام حرکت با کیبورد */
+
+/* ===== ۳) پس‌زمینه بخش بالای صفحه (Hero) ===== */
+.hero{background:radial-gradient(55% 80% at 12% 15%,#9b1726 0,transparent 62%),radial-gradient(50% 70% at 92% 100%,#c01a27 0,transparent 60%),#2A0A10}
+:root[data-theme="light"] .hero{background:radial-gradient(55% 80% at 12% 15%,#F0414A 0,transparent 62%),radial-gradient(50% 70% at 92% 100%,#9b1726 0,transparent 60%),#C8182A}
+/* در هر تم فقط یکی از آیکون‌های خورشید/ماه دیده می‌شود */
+:root[data-theme="light"] .ic-sun,:root:not([data-theme="light"]) .ic-moon{display:none}
+
+/* ===== ۴) دکمه‌ها (کلاس btn و sun) ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:999px;padding:.85rem 1.7rem;font-weight:700;transition:transform .2s,box-shadow .2s,background-color .2s}
+.btn:active{transform:scale(.97)} /* هنگام کلیک کمی کوچک می‌شود */
+.sun{background:var(--sun);color:#2B0A10} /* دکمه زرد */
+
+/* ===== ۵) کارت‌ها (محصولات و سوالات) ===== */
+.card{background:var(--surface);border:1px solid var(--line);transition:transform .3s,box-shadow .3s,border-color .3s,background-color .3s}
+
+/* ===== ۶) ظرف‌های در حال سقوط ===== */
+.rain{position:absolute;inset:0;overflow:hidden;pointer-events:none;container-type:size}
+.fx{position:absolute;top:0;animation:fall linear infinite;will-change:transform}
+/* انیمیشن سقوط: از بالا شروع، کمی به کنار، تا پایین، با چرخش */
+@keyframes fall{0%{transform:translate(0,-14cqh) rotate(var(--r))}50%{transform:translate(var(--sw),52cqh) rotate(calc(var(--r) + 180deg))}100%{transform:translate(0,114cqh) rotate(calc(var(--r) + 360deg))}}
+.hero h1,.hero p{text-shadow:0 2px 20px rgba(0,0,0,.35)} /* سایه ملایم برای خوانایی متن */
+
+/* ===== ۷) منوی موبایل ===== */
+.drawer{transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1)} /* بسته: بیرون صفحه، سمت راست */
+.drawer.open{transform:none} /* باز: می‌آید داخل صفحه */
+.ov{opacity:0;pointer-events:none;transition:opacity .3s}
+.ov.show{opacity:1;pointer-events:auto}
+
+/* ===== ۸) سوالات متداول (آکاردئون) ===== */
+details summary{list-style:none;cursor:pointer}details summary::-webkit-details-marker{display:none} /* حذف فلش پیش‌فرض */
+details summary i{transition:transform .2s;font-style:normal}
+details[open] summary i{transform:rotate(45deg)} /* علامت + هنگام باز شدن به × تبدیل می‌شود */
+
+/* ===== ۹) خط زیر لینک‌های منوی بالا هنگام هاور ===== */
+header nav a{position:relative;padding-block:.35rem}
+header nav a::after{content:"";position:absolute;inset-inline:0;bottom:-2px;height:2px;border-radius:2px;background:var(--sun);transform:scaleX(0);transform-origin:right;transition:transform .3s}
+
+/* ===== ۱۰) ردیف کارت‌های پرفروش‌ها ===== */
+.snap{scrollbar-width:thin;scrollbar-color:var(--red) transparent}
+/* وقتی کارت‌ها در صفحه جا شوند وسط می‌مانند؛ اگر زیاد باشند ردیف اسکرول می‌شود و چیزی بریده نمی‌شود */
+.snap>article:first-child{margin-inline-start:auto}
+.snap>article:last-child{margin-inline-end:auto}
+
+/* ===== ۱۱) افکت‌های هاور (فقط دستگاه‌هایی که موس دارند) ===== */
+@media (hover:hover){
+ header nav a:hover::after{transform:scaleX(1)}
+ .btn:hover{transform:translateY(-2px)}.sun:hover{box-shadow:0 10px 22px -8px rgba(255,200,61,.6)}
+ .card:hover{transform:translateY(-6px);box-shadow:0 20px 32px -16px rgba(0,0,0,.5);border-color:var(--red)}
+ #bento a{transition:transform .35s cubic-bezier(.2,.8,.2,1)}#bento a:hover{transform:scale(.98) rotate(-.6deg)}
+}
+
+/* ===== ۱۲) کاربرانی که انیمیشن را در سیستم خود خاموش کرده‌اند ===== */
+@media (prefers-reduced-motion:reduce){.fx{animation:none;top:var(--t)}*{transition-duration:.01ms!important}html{scroll-behavior:auto}}

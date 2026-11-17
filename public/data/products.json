@@ -1,0 +1,14 @@
+[
+{"id":1,"name":"تک پرس فومی","category":"disposable","price":6000,"stock":120,"emoji":"🥣","bg":"#FFE9E6","sales":95,"desc":"ظرف فومی تک‌پرس برای غذای گرم و سرد. سبک، مقاوم و مناسب مهمانی و بیرون‌بر."},
+{"id":2,"name":"بادکنک متالیک","category":"birthday","price":45000,"stock":60,"emoji":"🎈","bg":"#FFF1C9","sales":88,"desc":"بسته بادکنک متالیک براق در رنگ‌های شاد، مناسب تزیین جشن تولد."},
+{"id":3,"name":"ست بشقاب و لیوان تولد","category":"birthday","price":85000,"stock":8,"emoji":"🥳","bg":"#FFDCE8","sales":80,"desc":"ست هم‌رنگ بشقاب و لیوان کاغذی با طرح تولد؛ میز مهمانی را کامل می‌کند."},
+{"id":4,"name":"قاشق و چنگال یکبارمصرف","category":"disposable","price":30000,"stock":200,"emoji":"🥄","bg":"#D6F3EF","sales":76,"desc":"بسته قاشق و چنگال پلاستیکی مقاوم برای مهمانی‌های شلوغ."},
+{"id":5,"name":"لیوان کاغذی","category":"disposable","price":38000,"stock":90,"emoji":"🥤","bg":"#FFE9E6","sales":70,"desc":"لیوان کاغذی مناسب نوشیدنی سرد و گرم."},
+{"id":6,"name":"شمع تولد","category":"birthday","price":25000,"stock":0,"emoji":"🕯️","bg":"#FFF1C9","sales":55,"desc":"شمع رنگی کوچک برای کیک تولد."},
+{"id":7,"name":"کلاه تولد","category":"birthday","price":35000,"stock":40,"emoji":"🎉","bg":"#FFDCE8","sales":62,"desc":"بسته کلاه مخروطی رنگی برای مهمان‌های کوچک و بزرگ."},
+{"id":8,"name":"فویل آلومینیومی","category":"kitchen","price":52000,"stock":35,"emoji":"🍽️","bg":"#FFDCE8","sales":48,"desc":"رول فویل برای نگهداری و پخت غذا."},
+{"id":9,"name":"دستمال کاغذی","category":"hygiene","price":40000,"stock":150,"emoji":"🧻","bg":"#D6F3EF","sales":66,"desc":"دستمال کاغذی نرم، مناسب میز مهمانی و استفاده روزانه."},
+{"id":10,"name":"سفره یکبارمصرف","category":"disposable","price":28000,"stock":70,"emoji":"🍴","bg":"#FFE9E6","sales":58,"desc":"سفره یکبارمصرف ساده و تمیز برای مهمانی."},
+{"id":11,"name":"کیسه زباله","category":"kitchen","price":22000,"stock":9,"emoji":"🗑️","bg":"#D6F3EF","sales":44,"desc":"کیسه زباله مقاوم در اندازه متوسط."},
+{"id":12,"name":"دستکش یکبارمصرف","category":"hygiene","price":48000,"stock":80,"emoji":"🧤","bg":"#FFF1C9","sales":52,"desc":"دستکش یکبارمصرف بهداشتی برای آشپزی و نظافت."}
+]

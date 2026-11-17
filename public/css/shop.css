@@ -1,0 +1,12 @@
+.field{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:.75rem 1.2rem;outline:none;transition:border-color .2s}
+.field:focus{border-color:var(--sun)}
+.field::placeholder{color:var(--muted)}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.25rem;scrollbar-width:none}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:.5rem 1.1rem;font-weight:700;font-size:.9rem;white-space:nowrap;transition:background-color .2s,border-color .2s}
+.chip.on{background:var(--sun);color:#2B0A10;border-color:var(--sun)}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:999px}
+.step button{width:2.75rem;height:2.75rem;font-size:1.4rem;font-weight:700}
+.step output{min-width:2.5rem;text-align:center;font-weight:700}
+.skel{background:var(--surface);border:1px solid var(--line);border-radius:1.5rem;height:15rem;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.5}}
+@media (prefers-reduced-motion:reduce){.skel{animation:none}}

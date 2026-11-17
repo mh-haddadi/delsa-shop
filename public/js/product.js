@@ -1,11 +1,11 @@
 const id = +new URLSearchParams(location.search).get('id'), box = document.getElementById('box');
-const notFound = () => { box.innerHTML = '<div class="py-20 text-center"><p class="d text-3xl">این محصول پیدا نشد</p><a href="/shop.html" class="btn sun mt-6">برگشت به فروشگاه</a></div>'; };
+const notFound = () => { box.innerHTML = '<div class="py-20 text-center"><p class="d text-3xl">این محصول پیدا نشد</p><a href="shop.html" class="btn sun mt-6">برگشت به فروشگاه</a></div>'; };
 
 function show(p, all){
   document.title = p.name + ' | دلسا شاپ';
   const cat = (CATS.find(c => c[0] === p.category) || [])[1] || '';
   const stock = !p.stock ? 'ناموجود' : p.stock <= 10 ? `فقط ${fa(p.stock)} عدد مانده` : 'موجود در انبار';
-  box.innerHTML = `<nav class="mb-6 text-sm text-[var(--muted)]"><a href="/shop.html" class="underline underline-offset-4">فروشگاه</a> / <a href="/shop.html?cat=${p.category}" class="underline underline-offset-4">${cat}</a></nav>
+  box.innerHTML = `<nav class="mb-6 text-sm text-[var(--muted)]"><a href="shop.html" class="underline underline-offset-4">فروشگاه</a> / <a href="/shop.html?cat=${p.category}" class="underline underline-offset-4">${cat}</a></nav>
 <div class="grid gap-8 md:grid-cols-2 md:gap-12">
 <div class="grid h-72 place-items-center rounded-[2rem] text-[8rem] md:h-[28rem] md:text-[12rem]" style="background:${p.bg}" aria-hidden="true">${p.emoji}</div>
 <div class="flex flex-col"><h1 class="d text-4xl md:text-5xl">${esc(p.name)}</h1>

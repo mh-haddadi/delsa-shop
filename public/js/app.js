@@ -1,5 +1,5 @@
 // ---- Shared by every page: data source, cart, header, footer, theme ----
-const API = '/data/products.json'; // later: '/api/products' (nothing else changes)
+const API = 'data/products.json'; // later: '/api/products' (nothing else changes)
 const CATS = [['all','همه'],['disposable','یکبارمصرف'],['birthday','تم تولد'],['kitchen','آشپزخانه'],['hygiene','لوازم بهداشتی']];
 const fa = n => Number(n).toLocaleString('fa-IR');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -11,14 +11,14 @@ const Cart = {
 };
 
 const card = p => `<article class="card overflow-hidden rounded-[1.5rem] ${p.stock ? '' : 'opacity-70'}">
-<a href="/product.html?id=${p.id}" class="block"><div class="grid h-36 place-items-center text-6xl md:h-44 md:text-7xl" style="background:${p.bg}" aria-hidden="true">${p.emoji}</div></a>
-<div class="flex items-end justify-between gap-2 p-4"><a href="/product.html?id=${p.id}" class="min-w-0"><h3 class="font-bold">${esc(p.name)}</h3><p class="mt-1 text-sm text-[var(--muted)]"><b class="text-base text-[var(--ink)]">${fa(p.price)}</b> تومان</p></a>
+<a href="product.html?id=${p.id}" class="block"><div class="grid h-36 place-items-center text-6xl md:h-44 md:text-7xl" style="background:${p.bg}" aria-hidden="true">${p.emoji}</div></a>
+<div class="flex items-end justify-between gap-2 p-4"><a href="product.html?id=${p.id}" class="min-w-0"><h3 class="font-bold">${esc(p.name)}</h3><p class="mt-1 text-sm text-[var(--muted)]"><b class="text-base text-[var(--ink)]">${fa(p.price)}</b> تومان</p></a>
 ${p.stock ? `<button data-add="${p.id}" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#FFC83D] text-2xl font-bold text-[#2B0A10]" aria-label="افزودن ${esc(p.name)} به سبد">+</button>` : `<span class="text-xs font-bold text-[var(--muted)]">ناموجود</span>`}</div></article>`;
 
 const ico = d => `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">${d}</svg>`;
-const NAV = [['/','خانه'],['/shop.html','فروشگاه'],['/#faq','سوالات متداول'],['#foot','تماس با ما']];
+const NAV = [['landing.html','خانه'],['shop.html','فروشگاه'],['landing.html#faq','سوالات متداول'],['#foot','تماس با ما']];
 const links = cls => NAV.map(([h,t]) => `<a href="${h}" class="${cls}">${t}</a>`).join('');
-const brand = s => `<a href="/" class="flex items-center gap-2"><svg class="${s}"><use href="#logo"/></svg><span class="d text-xl md:text-2xl">دلسا شاپ</span></a>`;
+const brand = s => `<a href="landing.html" class="flex items-center gap-2"><svg class="${s}"><use href="#logo"/></svg><span class="d text-xl md:text-2xl">دلسا شاپ</span></a>`;
 
 function mountShell(){
   document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" class="absolute" aria-hidden="true"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#7D1420"/><stop offset="1" stop-color="#FF2A33"/></linearGradient></defs><symbol id="logo" viewBox="0 0 48 48"><path d="M24 3c11 0 21 7 21 20s-9 22-21 22S3 36 3 24 13 3 24 3z" fill="url(#g)"/><ellipse cx="24" cy="18" rx="6" ry="7.5" fill="none" stroke="#fff" stroke-width="2"/><path d="M24 25.5V32" stroke="#fff" stroke-width="2"/><rect x="19" y="32" width="10" height="8" rx="1" fill="none" stroke="#fff" stroke-width="2"/></symbol></svg>`);

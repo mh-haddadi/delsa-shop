@@ -13,7 +13,7 @@ function render(){
 }
 
 $('chips').innerHTML = CATS.map(([k,t]) => `<button class="chip" data-cat="${k}">${t}</button>`).join('');
-$('chips').onclick = e => { const c = e.target.closest('.chip'); if (!c) return; S.cat = c.dataset.cat; history.replaceState(null,'', S.cat === 'all' ? '/shop.html' : '?cat=' + S.cat); render(); };
+$('chips').onclick = e => { const c = e.target.closest('.chip'); if (!c) return; S.cat = c.dataset.cat; history.replaceState(null,'', S.cat === 'all' ? 'shop.html' : '?cat=' + S.cat); render(); };
 $('q').oninput = e => { S.q = e.target.value; render(); };
 $('sort').onchange = e => { S.sort = e.target.value; render(); };
 $('reset').onclick = () => { S.q = ''; S.cat = 'all'; $('q').value = ''; render(); };

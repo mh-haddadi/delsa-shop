@@ -1,6 +1,15 @@
 -- ============================================
 -- Delsa Shop - Database Schema
--- اجرا: mysql -u root -p < schema.sql
+-- Database: delsa_shop
+-- Server: MySQL 8+ / MariaDB 10.4+
+--
+-- اجرا:
+-- mysql -u root -p < schema.sql
+--
+-- این فایل فقط ساختار دیتابیس را می‌سازد.
+-- داده‌های اولیه در فایل seed.sql قرار دارند.
+-- این اسکریپت را برای ساخت دیتابیس خالی اجرا کنید؛
+-- برای اجرای مجدد روی دیتابیس دارای جدول، ابتدا از آن نسخه پشتیبان بگیرید.
 -- ============================================
 
 CREATE DATABASE IF NOT EXISTS delsa_shop
@@ -9,96 +18,84 @@ CREATE DATABASE IF NOT EXISTS delsa_shop
 
 USE delsa_shop;
 
--- ترتیب ساخت مهمه: اول جدول‌هایی که به جای دیگه اشاره نمی‌کنن
-
--- 1) categories
+-- 1) دسته‌بندی‌ها
 CREATE TABLE categories (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
-  slug VARCHAR(100) NOT NULL UNIQUE
-);
+  slug VARCHAR(100) NOT NULL,
+  description TEXT DEFAULT NULL,
+  image VARCHAR(255) DEFAULT NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_categories_slug (slug)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2) users
+-- 2) کاربران و مدیران
 CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
-  phone VARCHAR(20) NOT NULL UNIQUE,
+  phone VARCHAR(20) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('customer', 'admin') NOT NULL DEFAULT 'customer',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_users_phone (phone)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 3) products  (وابسته به categories)
+-- 3) محصولات
 CREATE TABLE products (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT,
   category_id INT NOT NULL,
   name VARCHAR(150) NOT NULL,
-  slug VARCHAR(150) NOT NULL UNIQUE,
-  description TEXT,
+  slug VARCHAR(150) NOT NULL,
+  description TEXT DEFAULT NULL,
   price INT NOT NULL,
   stock INT NOT NULL DEFAULT 0,
-  image VARCHAR(255),
+  image VARCHAR(255) DEFAULT NULL,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (category_id) REFERENCES categories(id)
-);
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_products_slug (slug),
+  KEY idx_products_category_id (category_id),
+  CONSTRAINT fk_products_category FOREIGN KEY (category_id) REFERENCES categories (id),
+  CONSTRAINT chk_products_price CHECK (price > 0),
+  CONSTRAINT chk_products_stock CHECK (stock >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 4) orders  (وابسته به users)
+-- 4) سفارش‌ها
 CREATE TABLE orders (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT,
   user_id INT NOT NULL,
-  status ENUM('pending', 'paid', 'shipped', 'done', 'canceled')
-    NOT NULL DEFAULT 'pending',
+  status ENUM('pending', 'paid', 'shipped', 'done', 'canceled') NOT NULL DEFAULT 'pending',
   total_price INT NOT NULL,
   address TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-);
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_orders_user_id (user_id),
+  CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users (id),
+  CONSTRAINT chk_orders_total_price CHECK (total_price > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 5) order_items  (وابسته به orders و products)
+-- 5) اقلام سفارش
 CREATE TABLE order_items (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT,
   order_id INT NOT NULL,
   product_id INT NOT NULL,
   quantity INT NOT NULL,
   unit_price INT NOT NULL,
-  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES products(id)
-);
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_order_product (order_id, product_id),
+  KEY idx_order_items_product_id (product_id),
+  CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
+  CONSTRAINT fk_order_items_product FOREIGN KEY (product_id) REFERENCES products (id),
+  CONSTRAINT chk_order_items_quantity CHECK (quantity > 0),
+  CONSTRAINT chk_order_items_unit_price CHECK (unit_price > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================
--- داده نمونه (فقط برای تست)
--- ============================================
-
-INSERT INTO categories (name, slug) VALUES
-  ('یکبارمصرف', 'disposable'),
-  ('تم تولد', 'birthday');
-
--- password_hash اینجا فقط placeholder هست؛ توی بک‌اند با bcrypt ساخته می‌شه
-INSERT INTO users (name, phone, password_hash, role) VALUES
-  ('سارا', '09121234567', 'TEMP_HASH', 'customer'),
-  ('مدیر', '09350000000', 'TEMP_HASH', 'admin');
-
-INSERT INTO products (category_id, name, slug, description, price, stock, image) VALUES
-  (2, 'بادکنک رنگی', 'colorful-balloon', 'بسته ۱۰ تایی', 6000, 50, '/img/balloon.jpg'),
-  (1, 'تک پرس فومی', 'foam-plate', 'بسته ۲۵ تایی', 8000, 200, '/img/plate.jpg'),
-  (2, 'کلاه تولد', 'party-hat', 'بسته ۶ تایی', 5000, 30, '/img/hat.jpg');
-
--- سفارش نمونه: سارا ۳ بادکنک + ۲ تک پرس = 34000
-INSERT INTO orders (user_id, total_price, address) VALUES
-  (1, 34000, 'کرج، خیابان نمونه');
-
-INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
-  (1, 1, 3, 6000),
-  (1, 2, 2, 8000);
-
--- ============================================
--- تست: رسید کامل سفارش ۱ (باید همون جدول JOIN رو ببینی)
--- ============================================
--- SELECT o.id AS سفارش, u.name AS مشتری, p.name AS محصول,
---        oi.quantity AS تعداد, oi.unit_price AS قیمت_واحد
--- FROM orders o
--- JOIN users u ON o.user_id = u.id
--- JOIN order_items oi ON oi.order_id = o.id
--- JOIN products p ON oi.product_id = p.id
--- WHERE o.id = 1;
+-- مبلغ‌ها بر حسب تومان هستند.
+-- unit_price قیمت محصول در زمان ثبت سفارش را نگه می‌دارد.
+-- برای حفظ سوابق، سفارش‌ها و محصولات دارای سابقه فروش را فیزیکی حذف نکنید؛
+-- از status و is_active برای لغو سفارش و غیرفعال‌کردن محصول استفاده کنید.

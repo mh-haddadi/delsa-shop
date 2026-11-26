@@ -5,9 +5,90 @@ const fa = n => Number(n).toLocaleString('fa-IR');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const Cart = {
-  get(){ try { return JSON.parse(localStorage.getItem('cart')) || {}; } catch(e){ return {}; } },
-  add(id, q = 1){ const c = this.get(); c[id] = (c[id] || 0) + q; try { localStorage.setItem('cart', JSON.stringify(c)); } catch(e){} this.badge(); },
-  badge(){ const n = Object.values(this.get()).reduce((a,b) => a + b, 0), el = document.getElementById('count'); if (el){ el.textContent = fa(n); el.hidden = !n; } }
+  // دریافت سبد خرید از localStorage
+  get() {
+    try {
+      return JSON.parse(localStorage.getItem('cart')) || {};
+    } catch (error) {
+      return {};
+    }
+  },
+
+  // ذخیره سبد خرید
+  save(cart) {
+    try {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    } catch (error) {
+      console.error('خطا در ذخیره سبد خرید:', error);
+    }
+
+    this.badge();
+  },
+
+  // افزودن محصول
+  add(id, q = 1) {
+    const cart = this.get();
+    const productId = Number(id);
+    const quantity = Number(q);
+
+    if (!Number.isInteger(productId) || productId <= 0 ||
+        !Number.isInteger(quantity) || quantity <= 0) {
+      return;
+    }
+
+    cart[productId] = (Number(cart[productId]) || 0) + quantity;
+
+    this.save(cart);
+  },
+
+  // تغییر تعداد محصول
+  update(id, quantity) {
+    const cart = this.get();
+    const productId = Number(id);
+    const q = Number(quantity);
+
+    if (!Number.isInteger(productId) || productId <= 0 ||
+        !Number.isInteger(q)) {
+      return;
+    }
+
+    if (q <= 0) {
+      delete cart[productId];
+    } else {
+      cart[productId] = q;
+    }
+
+    this.save(cart);
+  },
+
+  // حذف یک محصول
+  remove(id) {
+    const cart = this.get();
+    delete cart[id];
+    this.save(cart);
+  },
+
+  // خالی کردن سبد
+  clear() {
+    this.save({});
+  },
+
+  // به‌روزرسانی تعداد کنار آیکون سبد
+  badge() {
+    const cart = this.get();
+
+    const count = Object.values(cart).reduce(
+      (total, quantity) => total + (Number(quantity) || 0),
+      0
+    );
+
+    const element = document.getElementById('count');
+
+    if (element) {
+      element.textContent = fa(count);
+      element.hidden = count === 0;
+    }
+  }
 };
 
 const card = p => `<article class="card overflow-hidden rounded-[1.5rem] ${p.stock ? '' : 'opacity-70'}">
@@ -42,7 +123,17 @@ function mountShell(){
   document.getElementById('top').innerHTML = `<header class="relative z-20 mx-3 mt-3 flex max-w-5xl items-center justify-between gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 backdrop-blur md:mx-auto md:mt-5 md:px-5">
 <div class="flex items-center gap-2"><button id="menuBtn" class="grid h-10 w-10 place-items-center rounded-full bg-white/15 md:hidden" aria-label="باز کردن منو" aria-expanded="false">${ico('<path d="M4 7h16M4 12h16M4 17h16"/>')}</button>${brand('h-9 w-9')}</div>
 <nav class="hidden gap-6 text-sm text-white/90 md:flex">${links('')}</nav>
-<div class="flex items-center gap-1.5"><button class="relative grid h-10 w-10 place-items-center rounded-full bg-white/15" aria-label="سبد خرید">${ico('<path d="M3 4h2l2.4 11h10.2L20 8H6.5"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/>')}<span id="count" hidden class="absolute -top-1 -left-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#FFC83D] px-1 text-xs font-bold text-[#2B0A10]">0</span></button>
+<div class="flex items-center gap-1.5"><a href="cart.html"
+   class="relative grid h-10 w-10 place-items-center rounded-full bg-white/15"
+   aria-label="سبد خرید">
+
+  ${ico('<path d="M3 4h2l2.4 11h10.2L20 8H6.5"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/>')}
+
+  <span id="count" hidden
+        class="absolute -top-1 -left-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#FFC83D] px-1 text-xs font-bold text-[#2B0A10]">
+    0
+  </span>
+</a>
 <button id="tBtn" class="grid h-10 w-10 place-items-center rounded-full bg-white/15" aria-label="تغییر حالت روشن و تیره"><span class="ic-sun">${ico('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')}</span><span class="ic-moon">${ico('<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>')}</span></button></div></header>`;
   document.getElementById('foot-slot').innerHTML = `<footer id="foot" class="mt-16 bg-[#2A0A10] px-5 py-12 text-white"><div class="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-center md:justify-between"><div>${brand('h-12 w-12')}<p class="mt-3 text-sm text-white/70">مهرشهر، کرج. یکبارمصرف و تم تولد.</p></div><nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85">${links('')}</nav></div></footer>
 <div id="ov" class="ov fixed inset-0 z-40 bg-black/55"></div>

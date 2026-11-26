@@ -5,17 +5,21 @@ const db = require('../config/db');
 const getActiveProducts = async () => {
   const [products] = await db.query(`
     SELECT
-      id,
-      name,
-      description,
-      price,
-      stock,
-      image,
-      category_id
-    FROM products
-    WHERE is_active = TRUE
-    ORDER BY created_at DESC
+      p.id,
+      p.name,
+      p.description,
+      p.price,
+      p.stock,
+      p.image,
+      p.category_id,
+      c.slug AS category
+    FROM products AS p
+    JOIN categories AS c
+      ON p.category_id = c.id
+    WHERE p.is_active = TRUE
+    ORDER BY p.created_at DESC
   `);
+
   return products;
 };
 
@@ -24,15 +28,18 @@ const getProductById = async (id) => {
   const [products] = await db.query(
     `
       SELECT
-        id,
-        name,
-        description,
-        price,
-        stock,
-        image,
-        category_id
-      FROM products
-      WHERE id = ? AND is_active = TRUE
+        p.id,
+        p.name,
+        p.description,
+        p.price,
+        p.stock,
+        p.image,
+        p.category_id,
+        c.slug AS category
+      FROM products AS p
+      JOIN categories AS c
+        ON p.category_id = c.id
+      WHERE p.id = ? AND p.is_active = TRUE
     `,
     [id]
   );

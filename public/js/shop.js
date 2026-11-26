@@ -18,5 +18,25 @@ $('q').oninput = e => { S.q = e.target.value; render(); };
 $('sort').onchange = e => { S.sort = e.target.value; render(); };
 $('reset').onclick = () => { S.q = ''; S.cat = 'all'; $('q').value = ''; render(); };
 
-fetch(API).then(r => r.json()).then(d => { all = d; render(); })
-  .catch(() => { $('grid').innerHTML = '<p class="col-span-full py-10 text-center text-[var(--muted)]">محصولات بارگذاری نشد. صفحه را دوباره باز کن.</p>'; });
+fetch('/api/products')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('خطا در دریافت محصولات');
+    }
+
+    return response.json();
+  })
+  .then(result => {
+    if (!result.success) {
+      throw new Error('دریافت محصولات ناموفق بود');
+    }
+
+    all = result.data;
+    render();
+  })
+  .catch(error => {
+    console.error(error);
+
+    $('grid').innerHTML =
+      '<p class="col-span-full py-10 text-center text-[var(--muted)]">محصولات بارگذاری نشد. صفحه را دوباره باز کن.</p>';
+  });

@@ -11,9 +11,26 @@ const Cart = {
 };
 
 const card = p => `<article class="card overflow-hidden rounded-[1.5rem] ${p.stock ? '' : 'opacity-70'}">
-<a href="product.html?id=${p.id}" class="block"><div class="grid h-36 place-items-center text-6xl md:h-44 md:text-7xl" style="background:${p.bg}" aria-hidden="true">${p.emoji}</div></a>
-<div class="flex items-end justify-between gap-2 p-4"><a href="product.html?id=${p.id}" class="min-w-0"><h3 class="font-bold">${esc(p.name)}</h3><p class="mt-1 text-sm text-[var(--muted)]"><b class="text-base text-[var(--ink)]">${fa(p.price)}</b> تومان</p></a>
-${p.stock ? `<button data-add="${p.id}" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#FFC83D] text-2xl font-bold text-[#2B0A10]" aria-label="افزودن ${esc(p.name)} به سبد">+</button>` : `<span class="text-xs font-bold text-[var(--muted)]">ناموجود</span>`}</div></article>`;
+<a href="product.html?id=${p.id}" class="block">
+  <div class="grid h-36 place-items-center overflow-hidden text-6xl md:h-44 md:text-7xl"
+       style="background:${p.bg || '#FFF1C9'}" aria-hidden="true">
+    ${p.image
+      ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" class="h-full w-full object-contain p-3">`
+      : (p.emoji || '🛍️')}
+  </div>
+</a>
+<div class="flex items-end justify-between gap-2 p-4">
+  <a href="product.html?id=${p.id}" class="min-w-0">
+    <h3 class="font-bold">${esc(p.name)}</h3>
+    <p class="mt-1 text-sm text-[var(--muted)]">
+      <b class="text-base text-[var(--ink)]">${fa(p.price)}</b> تومان
+    </p>
+  </a>
+  ${p.stock
+    ? `<button data-add="${p.id}" class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#FFC83D] text-2xl font-bold text-[#2B0A10]" aria-label="افزودن ${esc(p.name)} به سبد">+</button>`
+    : `<span class="text-xs font-bold text-[var(--muted)]">ناموجود</span>`}
+</div>
+</article>`;
 
 const ico = d => `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">${d}</svg>`;
 const NAV = [['landing.html','خانه'],['shop.html','فروشگاه'],['landing.html#faq','سوالات متداول'],['#foot','تماس با ما']];

@@ -1,175 +1,179 @@
 /* ===== ۱) منوی موبایل (کشویی) ===== */
-const drawer = document.getElementById('drawer');   // خود منو
-const overlay = document.getElementById('ov');      // پس‌زمینه تیره
-const menuBtn = document.getElementById('menuBtn'); // دکمه همبرگری
+document.addEventListener('DOMContentLoaded', () => {
 
-// منو را باز (true) یا بسته (false) می‌کند
-function setMenu(open) {
-  drawer.classList.toggle('open', open);  // کلاس open منو را به داخل صفحه می‌آورد
-  overlay.classList.toggle('show', open); // پس‌زمینه تیره را نشان می‌دهد
-  if (open) drawer.removeAttribute('inert'); else drawer.setAttribute('inert', ''); // وقتی بسته است قابل فوکوس نباشد
-  menuBtn.setAttribute('aria-expanded', open);       // برای صفحه‌خوان‌ها
-  document.body.style.overflow = open ? 'hidden' : ''; // وقتی منو بازه صفحه اسکرول نشود
-}
-menuBtn.onclick = () => setMenu(true);   // کلیک روی همبرگر: باز شود
-overlay.onclick = () => setMenu(false);  // کلیک روی پس‌زمینه: بسته شود
-drawer.querySelectorAll('a,.close').forEach(el => el.onclick = () => setMenu(false)); // کلیک روی لینک یا ✕: بسته شود
-addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });        // کلید Esc: بسته شود
-
-/* ===== ۲) جستجو ===== */
-const searchBtn = document.getElementById('sBtn');
-const searchForm = document.getElementById('sForm');
-const searchInput = document.getElementById('sInput');
-let scrolled = false; // برای اینکه فقط یک بار به بخش محصولات اسکرول کنیم
-
-// با دکمه جستجو، فرم نمایش داده یا مخفی می‌شود
-searchBtn.onclick = () => {
-  const willShow = searchForm.hidden;
-  searchForm.hidden = !willShow;
-  searchBtn.setAttribute('aria-expanded', willShow);
-  if (willShow) searchInput.focus(); // مکان‌نما بره داخل کادر
-};
-searchForm.onsubmit = e => e.preventDefault(); // جلوگیری از رفرش شدن صفحه با Enter
-
-// هر بار که کاربر تایپ می‌کند، کارت‌هایی که نامشان شامل متن نیست مخفی می‌شوند
-searchInput.oninput = () => {
-  const q = searchInput.value.trim();
-  document.querySelectorAll('#best article').forEach(card => {
-    card.hidden = !!q && !card.querySelector('h3').textContent.includes(q);
-  });
-  if (q && !scrolled) { scrolled = true; document.getElementById('best').scrollIntoView({ behavior: 'smooth' }); }
-  if (!q) scrolled = false;
-};
-
-/* ===== ۳) تغییر تم تیره/روشن ===== */
-const themeBtn = document.getElementById('tBtn');
-const root = document.documentElement; // همان تگ html
-// متن توضیح دکمه را متناسب با تم فعلی تنظیم می‌کند
-const updateThemeLabel = () => themeBtn.setAttribute('aria-label', root.dataset.theme === 'light' ? 'تغییر به حالت تیره' : 'تغییر به حالت روشن');
-updateThemeLabel();
-themeBtn.onclick = () => {
-  const t = root.dataset.theme === 'light' ? 'dark' : 'light';
-  root.dataset.theme = t;  // CSS بر اساس data-theme رنگ‌ها را عوض می‌کند
-  updateThemeLabel();
-  try { localStorage.setItem('theme', t); } catch (e) {} // انتخاب کاربر را در مرورگر ذخیره می‌کند
-};
-
-/* ===== 5) دریافت محصولات از API ===== */
-
-const productsContainer = document.getElementById('bestProducts');
-Cart.badge();
-async function loadProducts() {
-  if (!productsContainer) return;
-
-  try {
-    // درخواست دریافت محصولات از سرور
-    const response = await fetch('/api/products');
-
-    // بررسی موفق بودن پاسخ HTTP
-    if (!response.ok) {
-      throw new Error('خطا در ارتباط با سرور');
-    }
-
-    // تبدیل پاسخ سرور به JavaScript
-    const result = await response.json();
-
-    if (!result.success || !Array.isArray(result.data)) {
-      throw new Error('ساختار اطلاعات دریافتی معتبر نیست');
-    }
-
-    const products = result.data;
-
-    // پاک کردن پیام «در حال دریافت...»
-    productsContainer.replaceChildren();
-
-    if (products.length === 0) {
-      productsContainer.textContent = 'محصولی برای نمایش وجود ندارد.';
-      return;
-    }
-
-    // ساخت کارت برای هر محصول
-    products.forEach(product => {
-
-      const article = document.createElement('article');
-      article.className =
-        'card min-w-[220px] w-[220px] shrink-0 rounded-2xl p-3';
-
-      // تصویر محصول
-      const imageBox = document.createElement('div');
-      imageBox.className =
-        'mb-3 grid h-36 place-items-center overflow-hidden rounded-xl bg-[var(--bg)]';
-
-      const img = document.createElement('img');
-      img.src = product.image;
-      img.alt = product.name;
-      img.className = 'h-full w-full object-contain';
-
-      img.addEventListener('error', () => {
-        imageBox.textContent = 'بدون تصویر';
-      });
-
-      imageBox.appendChild(img);
-
-      // نام محصول
-      const title = document.createElement('h3');
-      title.className = 'font-bold text-base';
-      title.textContent = product.name;
-
-      // قیمت محصول
-      const price = document.createElement('p');
-      price.className = 'mt-3 font-bold text-[var(--red)]';
-
-      price.textContent =
-        Number(product.price).toLocaleString('fa-IR') + ' تومان';
-
-      // دکمه افزودن به سبد خرید
-      const button = document.createElement('button');
-      button.className = 'btn sun mt-3 w-full !py-2 text-sm';
-      button.textContent = 'افزودن به سبد';
-      button.setAttribute('data-add', product.id);
-
-      // قرار دادن عناصر داخل کارت
-      article.append(imageBox, title, price, button);
-
-      // اعمال جستجوی فعلی روی کارت جدید
-      const query = searchInput.value.trim();
-
-      article.hidden =
-        !!query && !product.name.includes(query);
-
-      productsContainer.appendChild(article);
+  const drawer = document.getElementById('drawer');   // خود منو
+  const overlay = document.getElementById('ov');      // پس‌زمینه تیره
+  const menuBtn = document.getElementById('menuBtn'); // دکمه همبرگری
+  
+  // منو را باز (true) یا بسته (false) می‌کند
+  function setMenu(open) {
+    drawer.classList.toggle('open', open);  // کلاس open منو را به داخل صفحه می‌آورد
+    overlay.classList.toggle('show', open); // پس‌زمینه تیره را نشان می‌دهد
+    if (open) drawer.removeAttribute('inert'); else drawer.setAttribute('inert', ''); // وقتی بسته است قابل فوکوس نباشد
+    menuBtn.setAttribute('aria-expanded', open);       // برای صفحه‌خوان‌ها
+    document.body.style.overflow = open ? 'hidden' : ''; // وقتی منو بازه صفحه اسکرول نشود
+  }
+  menuBtn.onclick = () => setMenu(true);   // کلیک روی همبرگر: باز شود
+  overlay.onclick = () => setMenu(false);  // کلیک روی پس‌زمینه: بسته شود
+  drawer.querySelectorAll('a,.close').forEach(el => el.onclick = () => setMenu(false)); // کلیک روی لینک یا ✕: بسته شود
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });        // کلید Esc: بسته شود
+  
+  /* ===== ۲) جستجو ===== */
+  const searchBtn = document.getElementById('sBtn');
+  const searchForm = document.getElementById('sForm');
+  const searchInput = document.getElementById('sInput');
+  let scrolled = false; // برای اینکه فقط یک بار به بخش محصولات اسکرول کنیم
+  
+  // با دکمه جستجو، فرم نمایش داده یا مخفی می‌شود
+  searchBtn.onclick = () => {
+    const willShow = searchForm.hidden;
+    searchForm.hidden = !willShow;
+    searchBtn.setAttribute('aria-expanded', willShow);
+    if (willShow) searchInput.focus(); // مکان‌نما بره داخل کادر
+  };
+  searchForm.onsubmit = e => e.preventDefault(); // جلوگیری از رفرش شدن صفحه با Enter
+  
+  // هر بار که کاربر تایپ می‌کند، کارت‌هایی که نامشان شامل متن نیست مخفی می‌شوند
+  searchInput.oninput = () => {
+    const q = searchInput.value.trim();
+    document.querySelectorAll('#best article').forEach(card => {
+      card.hidden = !!q && !card.querySelector('h3').textContent.includes(q);
     });
-
-  } catch (error) {
-    console.error('Products Error:', error);
-
-    productsContainer.textContent =
-      'دریافت محصولات با مشکل مواجه شد. لطفاً دوباره تلاش کنید.';
+    if (q && !scrolled) { scrolled = true; document.getElementById('best').scrollIntoView({ behavior: 'smooth' }); }
+    if (!q) scrolled = false;
+  };
+  
+  /* ===== ۳) تغییر تم تیره/روشن ===== */
+  const themeBtn = document.getElementById('tBtn');
+  const root = document.documentElement; // همان تگ html
+  // متن توضیح دکمه را متناسب با تم فعلی تنظیم می‌کند
+  const updateThemeLabel = () => themeBtn.setAttribute('aria-label', root.dataset.theme === 'light' ? 'تغییر به حالت تیره' : 'تغییر به حالت روشن');
+  updateThemeLabel();
+  themeBtn.onclick = () => {
+    const t = root.dataset.theme === 'light' ? 'dark' : 'light';
+    root.dataset.theme = t;  // CSS بر اساس data-theme رنگ‌ها را عوض می‌کند
+    updateThemeLabel();
+    try { localStorage.setItem('theme', t); } catch (e) {} // انتخاب کاربر را در مرورگر ذخیره می‌کند
+  };
+  
+  /* ===== 5) دریافت محصولات از API ===== */
+  
+  const productsContainer = document.getElementById('bestProducts');
+  Cart.badge();
+  async function loadProducts() {
+    if (!productsContainer) return;
+  
+    try {
+      // درخواست دریافت محصولات از سرور
+      const response = await fetch('/api/products');
+  
+      // بررسی موفق بودن پاسخ HTTP
+      if (!response.ok) {
+        throw new Error('خطا در ارتباط با سرور');
+      }
+  
+      // تبدیل پاسخ سرور به JavaScript
+      const result = await response.json();
+  
+      if (!result.success || !Array.isArray(result.data)) {
+        throw new Error('ساختار اطلاعات دریافتی معتبر نیست');
+      }
+  
+      const products = result.data;
+  
+      // پاک کردن پیام «در حال دریافت...»
+      productsContainer.replaceChildren();
+  
+      if (products.length === 0) {
+        productsContainer.textContent = 'محصولی برای نمایش وجود ندارد.';
+        return;
+      }
+  
+      // ساخت کارت برای هر محصول
+      products.forEach(product => {
+  
+        const article = document.createElement('article');
+        article.className =
+          'card min-w-[220px] w-[220px] shrink-0 rounded-2xl p-3';
+  
+        // تصویر محصول
+        const imageBox = document.createElement('div');
+        imageBox.className =
+          'mb-3 grid h-36 place-items-center overflow-hidden rounded-xl bg-[var(--bg)]';
+  
+        const img = document.createElement('img');
+        img.src = product.image;
+        img.alt = product.name;
+        img.className = 'h-full w-full object-contain';
+  
+        img.addEventListener('error', () => {
+          imageBox.textContent = 'بدون تصویر';
+        });
+  
+        imageBox.appendChild(img);
+  
+        // نام محصول
+        const title = document.createElement('h3');
+        title.className = 'font-bold text-base';
+        title.textContent = product.name;
+  
+        // قیمت محصول
+        const price = document.createElement('p');
+        price.className = 'mt-3 font-bold text-[var(--red)]';
+  
+        price.textContent =
+          Number(product.price).toLocaleString('fa-IR') + ' تومان';
+  
+        // دکمه افزودن به سبد خرید
+        const button = document.createElement('button');
+        button.className = 'btn sun mt-3 w-full !py-2 text-sm';
+        button.textContent = 'افزودن به سبد';
+        button.setAttribute('data-add', product.id);
+  
+        // قرار دادن عناصر داخل کارت
+        article.append(imageBox, title, price, button);
+  
+        // اعمال جستجوی فعلی روی کارت جدید
+        const query = searchInput.value.trim();
+  
+        article.hidden =
+          !!query && !product.name.includes(query);
+  
+        productsContainer.appendChild(article);
+      });
+  
+    } catch (error) {
+      console.error('Products Error:', error);
+  
+      productsContainer.textContent =
+        'دریافت محصولات با مشکل مواجه شد. لطفاً دوباره تلاش کنید.';
+    }
   }
-}
-
-// اجرای تابع دریافت محصولات
-loadProducts();
-
-/* ===== 6) ظرف‌های یکبارمصرف در حال سقوط در بخش بالای صفحه ===== */
-const rain = document.querySelector('.rain');
-if (rain) {
-  const kinds = ['cup', 'plate', 'fork', 'spoon'];                       // نوع شکل‌ها (همان آیکون‌های بالای فایل)
-  const viewBoxes = { cup: '0 0 60 80', plate: '0 0 100 100', fork: '0 0 30 100', spoon: '0 0 30 100' };
-  const colors = ['#FFC83D', '#FF5C8A', '#2BB3A6', '#FFFFFF', '#FF8A5C']; // رنگ‌ها
-  for (let i = 0; i < 20; i++) {          // ۲۰ تا شکل می‌سازد
-    const kind = kinds[i % 4];
-    const size = 28 + Math.random() * 52;   // اندازه تصادفی
-    const isNear = size > 56;               // بزرگ‌ترها «نزدیک‌تر» هستند: تارتر و کندتر
-    const color = colors[i % 5];
-    const h = kind === 'plate' ? size : size * 1.3;
-    const w = kind === 'plate' ? size : h * (kind === 'cup' ? .75 : .3);
-    const el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    el.setAttribute('viewBox', viewBoxes[kind]);
-    el.setAttribute('class', 'fx');         // کلاس fx در CSS انیمیشن سقوط دارد
-    el.innerHTML = `<use href="#${kind}"/>`;
-    // موقعیت، رنگ، شفافیت، تاری و سرعت تصادفی
-    el.style.cssText = `left:${Math.random() * 96}%;width:${w}px;height:${h}px;color:${color};opacity:${color === '#FFFFFF' ? .22 : isNear ? .3 : .55};filter:blur(${isNear ? 2.5 : 0}px);--r:${Math.random() * 360}deg;--sw:${(Math.random() * 2 - 1) * 60}px;--t:${Math.random() * 85}%;animation-duration:${isNear ? 22 + Math.random() * 8 : 11 + Math.random() * 7}s;animation-delay:-${Math.random() * 20}s`;
-    rain.appendChild(el);
+  
+  // اجرای تابع دریافت محصولات
+  loadProducts();
+  
+  /* ===== 6) ظرف‌های یکبارمصرف در حال سقوط در بخش بالای صفحه ===== */
+  const rain = document.querySelector('.rain');
+  if (rain) {
+    const kinds = ['cup', 'plate', 'fork', 'spoon'];                       // نوع شکل‌ها (همان آیکون‌های بالای فایل)
+    const viewBoxes = { cup: '0 0 60 80', plate: '0 0 100 100', fork: '0 0 30 100', spoon: '0 0 30 100' };
+    const colors = ['#FFC83D', '#FF5C8A', '#2BB3A6', '#FFFFFF', '#FF8A5C']; // رنگ‌ها
+    for (let i = 0; i < 20; i++) {          // ۲۰ تا شکل می‌سازد
+      const kind = kinds[i % 4];
+      const size = 28 + Math.random() * 52;   // اندازه تصادفی
+      const isNear = size > 56;               // بزرگ‌ترها «نزدیک‌تر» هستند: تارتر و کندتر
+      const color = colors[i % 5];
+      const h = kind === 'plate' ? size : size * 1.3;
+      const w = kind === 'plate' ? size : h * (kind === 'cup' ? .75 : .3);
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      el.setAttribute('viewBox', viewBoxes[kind]);
+      el.setAttribute('class', 'fx');         // کلاس fx در CSS انیمیشن سقوط دارد
+      el.innerHTML = `<use href="#${kind}"/>`;
+      // موقعیت، رنگ، شفافیت، تاری و سرعت تصادفی
+      el.style.cssText = `left:${Math.random() * 96}%;width:${w}px;height:${h}px;color:${color};opacity:${color === '#FFFFFF' ? .22 : isNear ? .3 : .55};filter:blur(${isNear ? 2.5 : 0}px);--r:${Math.random() * 360}deg;--sw:${(Math.random() * 2 - 1) * 60}px;--t:${Math.random() * 85}%;animation-duration:${isNear ? 22 + Math.random() * 8 : 11 + Math.random() * 7}s;animation-delay:-${Math.random() * 20}s`;
+      rain.appendChild(el);
+    }
   }
-}
+  
+});

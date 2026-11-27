@@ -156,4 +156,9 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-add]'); if (!b) return;
   Cart.add(+b.dataset.add); const t = b.textContent; b.textContent = '✓'; setTimeout(() => b.textContent = t, 900);
 });
-document.addEventListener('DOMContentLoaded', mountShell);
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mountShell);
+} else {
+  mountShell();
+}

@@ -54,24 +54,10 @@ themeBtn.onclick = () => {
   try { localStorage.setItem('theme', t); } catch (e) {} // انتخاب کاربر را در مرورگر ذخیره می‌کند
 };
 
-/* ===== ۴) شمارنده سبد خرید (فعلاً فقط نمایشی؛ بعداً به بک‌اند وصل می‌شود) ===== */
-let cartCount = 0;
-const countBadge = document.getElementById('count');
-
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-add]');
-
-  if (!btn) return;
-
-  cartCount++;
-  countBadge.textContent = cartCount.toLocaleString('fa-IR');
-  countBadge.hidden = false;
-});
-
 /* ===== 5) دریافت محصولات از API ===== */
 
 const productsContainer = document.getElementById('bestProducts');
-
+Cart.badge();
 async function loadProducts() {
   if (!productsContainer) return;
 
@@ -140,7 +126,7 @@ async function loadProducts() {
       const button = document.createElement('button');
       button.className = 'btn sun mt-3 w-full !py-2 text-sm';
       button.textContent = 'افزودن به سبد';
-      button.setAttribute('data-add', '');
+      button.setAttribute('data-add', product.id);
 
       // قرار دادن عناصر داخل کارت
       article.append(imageBox, title, price, button);
